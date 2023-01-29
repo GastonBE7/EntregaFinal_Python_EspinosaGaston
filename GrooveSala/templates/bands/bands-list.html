@@ -11,6 +11,7 @@
 
     <h3>Estas son las bandas que nos eligen</h3>
 
+
     {% for band in object_list %}
         <div class="card" style="width: 18rem;">
             <img src="..." class="card-img-top" alt="...">
@@ -26,6 +27,7 @@
                 <a href="https://wa.me/{{band.contact}}" class="card-link">Contacto 📞</a>
             </div>
             <div class="card-body">
+                <a href="/bands/update-band/{{band.id}}" class="btn btn-primary"> Actualizar </a>
                 <a href="/bands/delete-band/{{band.pk}}/" class="btn btn-danger"> Dar de baja</a> 
             </div>
         </div>
