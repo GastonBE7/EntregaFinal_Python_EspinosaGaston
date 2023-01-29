@@ -26,7 +26,7 @@ def create_band(request):
             )
 
             context = {
-                'message' : f'Banda en lista 🤘🏼!'
+                'message' : f'Banda en lista 🤘🏼!' # Pendiente agregar para que pase el {nombre} de la banda que quedo en lista
             }
 
         else:
@@ -39,6 +39,70 @@ def create_band(request):
 class BandListView(ListView):
     model = Band
     template_name = 'bands/bands-list.html'
+
+def search_band(request):
+    if 'search' in request.GET:
+        search = request.GET['search']
+        bands = Band.objects.filter(name_band__icontains=search)
+        
+    else:
+        turns = Band.objects.all()
+    context = {
+        'object_list':bands,
+    }
+
+    return render(request, 'bands/bands-list.html', context=context)    
+
+def update_band(request, id):
+    band = Band.objects.get(id=id)
+
+    if request.method == 'GET':
+        context = {
+            'form' : BandForm(
+                initial = {
+                'name_band':band.name_band,
+                'members':band.members,
+                'musical_genre':band.musical_genre,
+                'own_instruments':band.own_instruments,
+                'ig':band.ig,
+                'contact':band.contact
+                }
+            ),
+        }
+        return render(request, 'bands/update-band.html', context=context)
+
+    elif request.method == 'POST':
+        form = BandForm(request.POST)
+        if form.is_valid():
+            band.name_band=form.cleaned_data['name_band']
+            band.members=form.cleaned_data['members']
+            band.musical_genre=form.cleaned_data['musical_genre']
+            band.own_instruments=form.cleaned_data['own_instruments']
+            band.ig=form.cleaned_data['ig']
+            band.contact=form.cleaned_data['contact']
+            band.save()
+
+            context = {
+                'message' : 'Banda actualizada🤘🏼!'
+            }
+
+        else:
+            context = {
+                'form_errors' : form.errors,
+                'form' : BandForm(
+                    initial = {
+                    'name_band':band.name_band,
+                    'members':band.members,
+                    'musical_genre':band.musical_genre,
+                    'own_instruments':band.own_instruments,
+                    'ig':band.ig,
+                    'contact':band.contact
+                    }
+                ),
+            }
+            return render(request, 'bands/update-band.html', context=context)
+    
+    return render(request, 'bands/update-band.html', context=context)
 
 class BandDeleteView(DeleteView):
     model = Band
