@@ -44,7 +44,7 @@ THIRD_APPS = [
 ] # Adicionales
 
 MY_APPS = [
-
+    'bands',
 ]
 
 INSTALLED_APPS = BASE_APPS + THIRD_APPS + MY_APPS

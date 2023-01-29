@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Borrar banda
+{% endblock %}
+
+{% block content %}
+    
+    <p> Seguro que desea borrar a '{{object.name_band}}'? </p>
+
+    <form action="" method="POST">
+        {% csrf_token %}
+        <input type="submit" class="btn btn-danger" value="Borrar">
+    </form>
+
+
+{% endblock %}
