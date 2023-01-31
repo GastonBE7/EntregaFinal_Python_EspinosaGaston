@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Lista de Turnos
+{% endblock %}
+
+
+{% block content %}
+
+    <h1>Hola este es el turnero</h1> 
+    <br>
+    <h2> Buscas un turno? </h2> <a href="/turns/create-turn/" class="btn btn-primary">Pedir</a>
+    <br><br><br>
+    <h2> Bandas en lista 🎶</h2>
+    <br>
+    {% for turn in object_list %}
+
+    <div class="card" style="width: 18rem;">
+        <img src="https://cdn.pixabay.com/photo/2013/07/13/13/17/karaoke-160752_960_720.png" class="card-img-top" alt="...">
+        <div class="card-body">
+        <h5 class="card-title">{{turn.name_band}}</h5>
+        <p class="card-text">Son {{turn.members}} integrantes</p>
+        <p class="card-text">Estan a la {{turn.turn_assigned}}</p>
+        <a href="/turns/cancel-turn/{{turn.id}}/" class="btn btn-danger"> Dar de baja</a>
+        </div>
+    </div>
+
+
+    {% endfor %}
+
+{% endblock %}

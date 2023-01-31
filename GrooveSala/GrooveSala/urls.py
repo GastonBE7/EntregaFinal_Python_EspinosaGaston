@@ -7,5 +7,8 @@ urlpatterns = [
     path('', index, name='index'),
     path('admin/', admin.site.urls),
 
-    path('bands/', include('bands.urls'))
+    path('users/', include('users.urls')),
+
+    path('bands/', include('bands.urls')),
+    path('turns/', include('bands.urls')),
 ]
