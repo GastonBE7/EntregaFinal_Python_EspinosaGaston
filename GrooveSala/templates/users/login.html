@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+
+{% block title %}
+    Login
+{% endblock %}
+
+
+
+{% block content %}
+    <h1>Ingrese sus datos para loguearse</h1>
+
+    {% if form %}
+    
+        <form action="" method="POST">
+
+            {% csrf_token %}
+
+            <table>
+                {{form.as_table}}
+            </table>
+           
+
+            <input type="submit" value="Ingresar">
+
+        </form>
+
+    {% endif %}
+
+    {% if errors %}
+        <h5 style="color:red">
+            Errores: {{errors}}
+        </h5>
+    {% endif %}
+
+
+{% endblock %}

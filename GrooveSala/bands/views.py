@@ -1,9 +1,10 @@
 from django.shortcuts import render
 
-from bands.models import Band
-from bands.forms import BandForm
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
+# <----------------------------------------------- BAND --------------------------------------------->
+from bands.models import Band
+from bands.forms import BandForm
 
 
 def create_band(request):
@@ -20,7 +21,6 @@ def create_band(request):
                 name_band=form.cleaned_data['name_band'],
                 members=form.cleaned_data['members'],
                 musical_genre=form.cleaned_data['musical_genre'],
-                own_instruments=form.cleaned_data['own_instruments'],
                 ig=form.cleaned_data['ig'],
                 contact=form.cleaned_data['contact'],
             )
@@ -63,7 +63,6 @@ def update_band(request, id):
                 'name_band':band.name_band,
                 'members':band.members,
                 'musical_genre':band.musical_genre,
-                'own_instruments':band.own_instruments,
                 'ig':band.ig,
                 'contact':band.contact
                 }
@@ -77,7 +76,6 @@ def update_band(request, id):
             band.name_band=form.cleaned_data['name_band']
             band.members=form.cleaned_data['members']
             band.musical_genre=form.cleaned_data['musical_genre']
-            band.own_instruments=form.cleaned_data['own_instruments']
             band.ig=form.cleaned_data['ig']
             band.contact=form.cleaned_data['contact']
             band.save()
@@ -94,7 +92,6 @@ def update_band(request, id):
                     'name_band':band.name_band,
                     'members':band.members,
                     'musical_genre':band.musical_genre,
-                    'own_instruments':band.own_instruments,
                     'ig':band.ig,
                     'contact':band.contact
                     }
@@ -108,3 +105,40 @@ class BandDeleteView(DeleteView):
     model = Band
     template_name = 'bands/delete-band.html'
     success_url = '/bands/bands-list/'
+
+
+
+# <----------------------------------------------- TURNS --------------------------------------------->
+from bands.models import Turn
+from bands.forms import TurnForm
+
+def create_turn(request):
+    if request.method == 'GET':
+        context = {
+            'form' : TurnForm()
+        }
+        return render(request, 'turns/create-turn.html', context=context)
+
+    elif request.method == 'POST':
+        form = TurnForm(request.POST)
+        if form.is_valid():
+            Turn.objects.create(
+                turn_assigned=form.cleaned_data['turn_assigned'],
+                own_instruments=form.cleaned_data['own_instruments']
+            )
+
+            context = {
+                'message' : 'Turno Solicitado! 👍🏼'
+            }
+            return render(request, 'turns/create-turn.html', context=context)
+
+        else:
+            context = {
+                'form_errors' : form.errors,
+                'form' : TurnForm(),
+            }
+    return render(request, 'turns/create-turn.html', context=context)
+
+class TurnListView(ListView):
+    model = Turn
+    template_name = 'turns/turns-list.html'
