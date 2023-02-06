@@ -2,11 +2,33 @@ from django.shortcuts import render
 
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
+
 # <----------------------------------------------- BAND --------------------------------------------->
 from bands.models import Band
 from bands.forms import BandForm
 
 
+
+class BandListView(ListView):
+    model = Band
+    template_name = 'bands/bands-list.html'
+
+def search_band(request):
+    if 'search' in request.GET:
+        search = request.GET['search']
+        bands = Band.objects.filter(name_band__icontains=search)
+        
+    else:
+        turns = Band.objects.all()
+    context = {
+        'object_list':bands,
+    }
+
+    return render(request, 'bands/bands-list.html', context=context)    
+
+@login_required
 def create_band(request):
     if request.method == 'GET':
         context = {
@@ -35,24 +57,7 @@ def create_band(request):
                 'form' : BandForm(),
             }
         return render(request, 'bands/create-band.html', context=context)
-
-class BandListView(ListView):
-    model = Band
-    template_name = 'bands/bands-list.html'
-
-def search_band(request):
-    if 'search' in request.GET:
-        search = request.GET['search']
-        bands = Band.objects.filter(name_band__icontains=search)
-        
-    else:
-        turns = Band.objects.all()
-    context = {
-        'object_list':bands,
-    }
-
-    return render(request, 'bands/bands-list.html', context=context)    
-
+@login_required
 def update_band(request, id):
     band = Band.objects.get(id=id)
 
@@ -101,7 +106,7 @@ def update_band(request, id):
     
     return render(request, 'bands/update-band.html', context=context)
 
-class BandDeleteView(DeleteView):
+class BandDeleteView(LoginRequiredMixin, DeleteView):
     model = Band
     template_name = 'bands/delete-band.html'
     success_url = '/bands/bands-list/'
@@ -110,7 +115,41 @@ class BandDeleteView(DeleteView):
 
 # <----------------------------------------------- TURNS --------------------------------------------->
 from bands.models import Turn
-from bands.forms import TurnForm
+from bands.forms import TurnForm, FirstTurnForm
+
+
+def first_time(request):
+    return render(request, 'turns/first-time.html', context={})
+
+def create_first_turn(request):
+    if request.method == 'GET':
+            context = {
+                'form' : FirstTurnForm()
+            }
+            return render(request, 'turns/create-first-turn.html', context=context)
+
+    elif request.method == 'POST':
+        form = FirstTurnForm(request.POST)
+        if form.is_valid():
+            Turn.objects.create(
+                name_band=form.cleaned_data['name_band'],
+                members=form.cleaned_data['members'],
+                turn_assigned=form.cleaned_data['turn_assigned'],
+                own_instruments=form.cleaned_data['own_instruments'],
+                contact=form.cleaned_data['contact']
+            )
+
+            context = {
+                'message' : 'Turno Solicitado! 👍🏼'
+            }
+            return render(request, 'turns/create-first-turn.html', context=context)
+
+        else:
+            context = {
+                'form_errors' : form.errors,
+                'form' : FirstTurnForm(),
+            }
+        return render(request, 'turns/create-first-turn.html', context=context)
 
 def create_turn(request):
     if request.method == 'GET':
@@ -142,3 +181,8 @@ def create_turn(request):
 class TurnListView(ListView):
     model = Turn
     template_name = 'turns/turns-list.html'
+
+class TurnDeleteView(DeleteView):
+    model = Turn
+    template_name = 'turns/cancel-turn.html'
+    success_url = '/turns/turns-list/'

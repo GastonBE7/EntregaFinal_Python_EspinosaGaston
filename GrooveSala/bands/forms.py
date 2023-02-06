@@ -14,3 +14,9 @@ class TurnForm(forms.ModelForm):
     class Meta:
         model = Turn
         fields = ['turn_assigned', 'own_instruments']
+
+class FirstTurnForm(forms.ModelForm):
+
+    class Meta:
+        model = Turn
+        fields = ['name_band', 'members', 'turn_assigned', 'own_instruments', 'contact']

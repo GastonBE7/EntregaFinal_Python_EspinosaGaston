@@ -22,7 +22,7 @@ def login_view(request):
             if user is not None:
                 login(request, user)
                 context = {
-                    'message':f'Bienvenido {username}!'
+                    'message':f'Bienvenid@ {username}!',
                 }
                 return render(request, 'index.html',context=context)
 

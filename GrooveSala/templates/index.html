@@ -5,5 +5,15 @@
 {% endblock %}
 
 {% block content %}
-    Bienvenidos {{request.user}}! Acá comienza todo 🤩
+
+    {% if message %}
+        <h2>{{message}}</h2>
+    {% elif request.user.is_authenticated %}
+        <h4>Bienvenid@/s! <a style='color:green' >{{request.user}}</a> Acá comienza todo 🤩</h4>
+    {% else %}
+        <h4>Bienvenid@/s! Acá comienza todo 🤩</h4>
+    {% endif %}
+
+
+
 {% endblock %}
