@@ -21,7 +21,7 @@ def search_band(request):
         bands = Band.objects.filter(name_band__icontains=search)
         
     else:
-        turns = Band.objects.all()
+        bands = Band.objects.all()
     context = {
         'object_list':bands,
     }

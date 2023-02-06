@@ -45,6 +45,7 @@ THIRD_APPS = [
 
 MY_APPS = [
     'bands',
+    'beverages',
     'users',
 ]
 

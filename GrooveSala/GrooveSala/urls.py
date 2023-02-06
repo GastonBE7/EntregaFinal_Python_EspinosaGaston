@@ -11,4 +11,5 @@ urlpatterns = [
 
     path('bands/', include('bands.urls')),
     path('turns/', include('bands.urls')),
+    path('beverages/', include('beverages.urls')),
 ]
