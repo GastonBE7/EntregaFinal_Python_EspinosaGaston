@@ -1,7 +1,13 @@
 from django.shortcuts import render, redirect
 
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login, authenticate
+
+from django.contrib.auth.decorators import login_required
+from users.forms import RegisterForm, UserUpdateForm, UserProfileForm
+from users.models import UserProfile
+
+# <--------------------------------------------- USER -------------------------------------------->
 
 def login_view(request):
     if request.method == 'GET':
@@ -36,21 +42,92 @@ def login_view(request):
 
 def register(request):
     if request.method == 'GET':
-        form = UserCreationForm()
+        form = RegisterForm()
         context = {
             'form': form
         }
         return render(request, 'users/signup.html', context=context)
     
     elif request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = RegisterForm(request.POST)
 
         if form.is_valid():
+            user = form.save()
+            UserProfile.objects.create(user=user)
+            return redirect('login')
+
+        context = {
+            'errors': form.errors,
+            'form':RegisterForm()
+        }
+        return render(request, 'users/signup.html', context=context)
+
+@login_required
+def update_user(request):
+    user = request.user
+    if request.method == 'GET':
+        form = UserUpdateForm(initial = {
+            'username':user.username,
+            'name_band':user.name_band,
+            'ig':user.ig
+            }
+        )
+        context = {
+            'form': form
+        }
+        return render(request, 'users/update-user.html', context=context)
+    
+    elif request.method == 'POST':
+        form = UserUpdateForm(request.POST)
+
+        if form.is_valid():
+            user.username = form.cleaned_data.get('username')
+            user.name_band = form.cleaned_data.get('name_band')
+            user.ig = form.cleaned_data.get('ig')
             form.save()
             return redirect('login')
 
         context = {
             'errors': form.errors,
-            'form':UserCreationForm()
+            'form':UserUpdateForm(initial = {
+            'username':user.username,
+            'name_band':user.name_band,
+            'ig':user.ig
+            }
+            )
+        }
+        return render(request, 'users/update-user.html', context=context)
+
+# <--------------------------------------------- PROFILE -------------------------------------------->
+def update_user_profile(request):
+    if request.method == 'GET':
+        form = UserProfileForm(
+            initial= {
+                'user':request.user.profile.user,
+                'members':request.user.profile.members, 
+                'musical_genre':request.user.profile.musical_genre,
+                'contact':request.user.profile.contact,
+                'profile_picture':request.user.profile.profile_picture,
+            }
+        )
+        context = {
+            'form': form
+        }
+        return render(request, 'users/update-profile.html', context=context)
+    
+    elif request.method == 'POST':
+        form = UserProfileForm(request.POST, request.FILES)
+        user = request.user
+        if form.is_valid():
+            user.profile.members=form.cleaned_data.get('members')
+            user.profile.musical_genre=form.cleaned_data.get('musical_genre')
+            user.profile.contact=form.cleaned_data.get('contact')
+            user.profile.profile_picture=form.cleaned_data.get('profile_picture')
+            user.profile.save()
+            return redirect('index')
+
+        context = {
+            'errors': form.errors,
+            'form':UserProfileForm()
         }
         return render(request, 'users/signup.html', context=context)
