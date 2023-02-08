@@ -4,9 +4,8 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login, authenticate
 
 from django.contrib.auth.decorators import login_required
-from users.forms import RegisterForm, UserUpdateForm, UserProfileForm
+from users.forms import RegisterForm, UserProfileForm
 from users.models import UserProfile
-
 # <--------------------------------------------- USER -------------------------------------------->
 
 def login_view(request):
@@ -27,10 +26,7 @@ def login_view(request):
             
             if user is not None:
                 login(request, user)
-                context = {
-                    'message':f'Bienvenid@ {username}!',
-                }
-                return render(request, 'index.html',context=context)
+                return redirect('index')
 
         else:
             form = AuthenticationForm()
@@ -61,42 +57,6 @@ def register(request):
             'form':RegisterForm()
         }
         return render(request, 'users/signup.html', context=context)
-
-@login_required
-def update_user(request):
-    user = request.user
-    if request.method == 'GET':
-        form = UserUpdateForm(initial = {
-            'username':user.username,
-            'name_band':user.name_band,
-            'ig':user.ig
-            }
-        )
-        context = {
-            'form': form
-        }
-        return render(request, 'users/update-user.html', context=context)
-    
-    elif request.method == 'POST':
-        form = UserUpdateForm(request.POST)
-
-        if form.is_valid():
-            user.username = form.cleaned_data.get('username')
-            user.name_band = form.cleaned_data.get('name_band')
-            user.ig = form.cleaned_data.get('ig')
-            form.save()
-            return redirect('login')
-
-        context = {
-            'errors': form.errors,
-            'form':UserUpdateForm(initial = {
-            'username':user.username,
-            'name_band':user.name_band,
-            'ig':user.ig
-            }
-            )
-        }
-        return render(request, 'users/update-user.html', context=context)
 
 # <--------------------------------------------- PROFILE -------------------------------------------->
 def update_user_profile(request):

@@ -6,7 +6,13 @@ class BandForm(forms.ModelForm):
     
     class Meta:
         model = Band
-        fields = '__all__'
+        fields = ['logo', 'name_band', 'members', 'musical_genre', 'ig', 'contact']
+
+class BandUpdateForm(forms.ModelForm):
+    
+    class Meta:
+        model = Turn
+        fields = ['logo', 'members', 'musical_genre', 'own_instruments', 'contact']
 
 
 class TurnForm(forms.ModelForm):
@@ -19,4 +25,4 @@ class FirstTurnForm(forms.ModelForm):
 
     class Meta:
         model = Turn
-        fields = ['name_band', 'members', 'turn_assigned', 'own_instruments', 'contact']
+        fields = ['name_band', 'members', 'turn_assigned', 'own_instruments','contact']

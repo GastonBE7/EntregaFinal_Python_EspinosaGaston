@@ -8,9 +8,11 @@ class Beverage(models.Model):
         (710, 710),
     )
 
-    brand = models.CharField(max_length=50, unique=True)
+    picture = models.ImageField(upload_to='beverage_picture', null=True, )
+    brand = models.CharField(max_length=50)
     size = models.IntegerField(choices=CHOICES, default=473)
     quantity = models.IntegerField()
+    creation_time =models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.brand

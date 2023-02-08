@@ -12,12 +12,6 @@ class RegisterForm(UserCreationForm):
         model = User
         fields = ['username', 'email', 'name_band', 'ig', 'password1','password2']
 
-class UserUpdateForm(forms.ModelForm):
-    name_band = forms.CharField(max_length=100, required=True, label='Nombre grupo/banda')
-    ig = forms.CharField(max_length=100, required=True, label='@(instagram)')
-    class Meta:
-        model = User
-        fields = ['name_band', 'ig']
 
 class UserProfileForm(forms.ModelForm):
     members=forms.IntegerField(label='Nro de Integrantes')
@@ -25,4 +19,4 @@ class UserProfileForm(forms.ModelForm):
 
     class Meta:
         model = UserProfile
-        fields = ['members', 'musical_genre', 'contact', 'profile_picture']
+        fields = ['members', 'musical_genre', 'contact']

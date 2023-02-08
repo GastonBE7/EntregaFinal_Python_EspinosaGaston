@@ -12,22 +12,30 @@
     <h2> Ingresaron nuevas bebidas? </h2> <a href="/beverages/create-beverage/" class="btn btn-primary">Anotar</a>
     <br><br><br>
     <h2> Bebidas en lista 🍺</h2>
+
     <form class="form-inline my-2 my-lg-0" action="/beverages/search-beverages/" method="GET">
-        <input class="form-control mr-sm-2" type="search" placeholder="Search beverages" aria-label="Search" name="search">
+        <input class="form-control mr-sm-2" type="search" placeholder="Buscar bebidas" aria-label="Search" name="search">
     </form>
     <br>
-    {% for beverage in object_list %}
+    <ul class="list-group list-group-horizontal">
+        {% for beverage in object_list %}
 
-        <div class="card" style="width: 18rem;">
-            <img src="https://png.pngtree.com/png-clipart/20210122/ourmid/pngtree-gold-can-of-soda-drink-flat-design-png-image_2786568.jpg" class="card-img-top" alt="...">
-            <div class="card-body">
-            <h5 class="card-title">{{beverage.brand}}</h5>
-            <p class="card-text">Ingresaron {{beverage.quantity}} latas</p>
-            <p class="card-text">De {{beverage.size}}ml</p>
+            <div class="card" style="width: 15rem;">
+                {% if beverage.picture.url != '' %}
+                    <img src="{{beverage.picture.url}}" class="card-img-top" width="200px" height="200px" alt="...">
+                {% else %}
+                <img src="..." class="card-img-top" alt="...">
+                {% endif %}
+                <div class="card-body">
+                <h5 class="card-title">{{beverage.brand}}</h5>
+                <p class="card-text">Ingresaron {{beverage.quantity}} latas</p>
+                <p class="card-text">De {{beverage.size}}ml</p>
+                <p class="card-text">Registrado: {{beverage.creation_time}}</p>
+                </div>
             </div>
-        </div>
 
 
-    {% endfor %}
+        {% endfor %}
+    </ul>
 
 {% endblock %}

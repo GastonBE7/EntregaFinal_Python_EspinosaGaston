@@ -13,12 +13,13 @@ def create_beverage(request):
         return render(request, 'beverages/create-beverage.html', context=context)
 
     elif request.method == 'POST':
-        form = BeverageForm(request.POST)
+        form = BeverageForm(request.POST, request.FILES)
         if form.is_valid():
             Beverage.objects.create(
+                picture=form.cleaned_data['picture'],
                 brand=form.cleaned_data['brand'],
                 size=form.cleaned_data['size'],
-                quantity =form.cleaned_data['quantity']
+                quantity=form.cleaned_data['quantity'],
             )
 
             context = {

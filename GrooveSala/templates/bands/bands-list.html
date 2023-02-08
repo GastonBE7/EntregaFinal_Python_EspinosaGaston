@@ -16,25 +16,36 @@
 
     {% for band in object_list %}
         <div class="card" style="width: 18rem;">
-            <img src="..." class="card-img-top" alt="...">
+            {% if band.logo.url != '' %}
+                <img src="{{band.logo.url}}" class="card-img-top" alt="Error">
+            {% else %}
+                <img src="https://cdn.pixabay.com/photo/2013/07/13/13/17/karaoke-160752_960_720.png" class="card-img-top" alt="...">
+            {% endif %}
             <div class="card-body">
                 <h5 class="card-title">{{band.name_band}}</h5>
-                <p class="card-text">Hacen {{band.musical_genre}}</p>
+                {% if band.ig != None %}
+                    <p class="card-text">Hacen {{band.musical_genre}}</p>
+                {% else %}
+                {% endif %}
             </div>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item"> Son {{band.members}} integrantes</li>
                 </ul>
             <div class="card-body">
-                <a href="https://www.instagram.com/{{band.ig}}/" class="card-link">@Intagram</a>
+                {% if band.ig != None %}
+                    <a href="https://www.instagram.com/{{band.ig}}/" class="card-link">@Intagram</a>
+                {% else %}
+                {% endif %}
                 <a href="https://wa.me/{{band.contact}}" class="card-link">Contacto 📞</a>
             </div>
-            {% if user.is_staff == True %}
+            {% if user.is_staff or request.user.name_band == band.name_band %}
                 <div class="card-body">
                     <a href="/bands/update-band/{{band.id}}" class="btn btn-primary"> Actualizar </a>
                     <a href="/bands/delete-band/{{band.pk}}/" class="btn btn-danger"> Dar de baja</a> 
                 </div>
             {% endif %}
         </div>
+        <br>
         
     {% endfor%}
     

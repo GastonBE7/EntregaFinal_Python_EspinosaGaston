@@ -1,13 +1,13 @@
 from django.shortcuts import render
 
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, DeleteView
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 
 # <----------------------------------------------- BAND --------------------------------------------->
 from bands.models import Band
-from bands.forms import BandForm
+from bands.forms import BandForm, BandUpdateForm
 
 
 
@@ -37,16 +37,17 @@ def create_band(request):
         return render(request, 'bands/create-band.html', context=context)
 
     elif request.method == 'POST':
-        form = BandForm(request.POST)
+        form = BandForm(request.POST, request.FILES)
         if form.is_valid():
             Band.objects.create(
+                logo=form.cleaned_data['logo'],
                 name_band=form.cleaned_data['name_band'],
                 members=form.cleaned_data['members'],
                 musical_genre=form.cleaned_data['musical_genre'],
                 ig=form.cleaned_data['ig'],
                 contact=form.cleaned_data['contact'],
             )
-
+            
             context = {
                 'message' : f'Banda en lista 🤘🏼!' # Pendiente agregar para que pase el {nombre} de la banda que quedo en lista
             }
@@ -57,18 +58,19 @@ def create_band(request):
                 'form' : BandForm(),
             }
         return render(request, 'bands/create-band.html', context=context)
+
 @login_required
 def update_band(request, id):
     band = Band.objects.get(id=id)
 
     if request.method == 'GET':
         context = {
-            'form' : BandForm(
+            'form' : BandUpdateForm(
                 initial = {
-                'name_band':band.name_band,
+                'logo':band.logo,
                 'members':band.members,
                 'musical_genre':band.musical_genre,
-                'ig':band.ig,
+                'own_instruments':band.own_instruments,
                 'contact':band.contact
                 }
             ),
@@ -76,13 +78,13 @@ def update_band(request, id):
         return render(request, 'bands/update-band.html', context=context)
 
     elif request.method == 'POST':
-        form = BandForm(request.POST)
+        form = BandUpdateForm(request.POST, request.FILES)
         if form.is_valid():
-            band.name_band=form.cleaned_data['name_band']
+            band.logo=form.cleaned_data['logo']
             band.members=form.cleaned_data['members']
             band.musical_genre=form.cleaned_data['musical_genre']
-            band.ig=form.cleaned_data['ig']
             band.contact=form.cleaned_data['contact']
+            band.own_instruments=form.cleaned_data['own_instruments']
             band.save()
 
             context = {
@@ -92,12 +94,12 @@ def update_band(request, id):
         else:
             context = {
                 'form_errors' : form.errors,
-                'form' : BandForm(
+                'form' : BandUpdateForm(
                     initial = {
-                    'name_band':band.name_band,
+                    'logo':band.logo,
                     'members':band.members,
                     'musical_genre':band.musical_genre,
-                    'ig':band.ig,
+                    'own_instruments':band.own_instruments,
                     'contact':band.contact
                     }
                 ),

@@ -1,11 +1,13 @@
 from django.db import models
 
 class Band(models.Model):
-    name_band =models.CharField(max_length=100)
+    logo=models.ImageField(upload_to='band_logo', null=True, blank=True)
+    name_band =models.CharField(unique=True, max_length=100)
     members=models.IntegerField()
-    musical_genre=models.CharField(max_length=100)
-    ig=models.CharField(max_length=100)
-    contact=models.IntegerField()
+    musical_genre=models.CharField(max_length=100,  null=True, blank=True)
+    ig=models.CharField(max_length=100, null=True, blank=True)
+    own_instruments=models.BooleanField(null=True, blank=True)
+    contact=models.IntegerField(null=True, blank=True)
     
 
     def __str__(self):
@@ -19,6 +21,5 @@ class Turn(Band):
         ('Noche', 'Noche'),
     )
 
-    own_instruments=models.BooleanField(default=True)
-    turn_assigned =models.CharField(choices=CHOICES, max_length=6)
+    turn_assigned =models.CharField(choices=CHOICES, max_length=6,  null=True, blank=True)
     creation_time =models.DateTimeField(auto_now_add=True)
