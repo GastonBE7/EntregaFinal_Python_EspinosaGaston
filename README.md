@@ -20,5 +20,7 @@ Errores sin solucionar
 Error más grande
 Generar un usuario y que se genere una banda pero que los campos del usuario (name_band , ig) se generen también en esta banda.
 
-Link del video (muestra en funcionamiento): 
+Link del video (muestra en funcionamiento): https://youtu.be/sLI5DoBt3o0
+
+Perdón por excederme de tiempo.
 
