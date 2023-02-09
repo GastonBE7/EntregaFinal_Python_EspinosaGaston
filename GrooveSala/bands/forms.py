@@ -1,7 +1,9 @@
 from django import forms
 
-from bands.models import Band, Turn
+from bands.models import Band, Turn, Event
 
+
+# <----------------------------------------------- BANDS --------------------------------------------->
 class BandForm(forms.ModelForm):
     
     class Meta:
@@ -15,11 +17,21 @@ class BandUpdateForm(forms.ModelForm):
         fields = ['logo', 'members', 'musical_genre', 'own_instruments', 'contact']
 
 
+class EventForm(forms.ModelForm):
+
+    class Meta:
+        model = Event
+        fields = '__all__'
+
+
+
+
+# <----------------------------------------------- TURNS --------------------------------------------->
 class TurnForm(forms.ModelForm):
 
     class Meta:
         model = Turn
-        fields = ['turn_assigned', 'own_instruments']
+        fields = ['name_band', 'turn_assigned', 'members', 'own_instruments']
 
 class FirstTurnForm(forms.ModelForm):
 

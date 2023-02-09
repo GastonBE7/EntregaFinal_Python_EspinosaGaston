@@ -13,6 +13,7 @@ class Beverage(models.Model):
     size = models.IntegerField(choices=CHOICES, default=473)
     quantity = models.IntegerField()
     creation_time =models.DateTimeField(auto_now_add=True)
+    sold =models.BooleanField(default=False)
 
     def __str__(self):
         return self.brand

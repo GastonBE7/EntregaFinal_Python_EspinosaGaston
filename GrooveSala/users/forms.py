@@ -14,9 +14,7 @@ class RegisterForm(UserCreationForm):
 
 
 class UserProfileForm(forms.ModelForm):
-    members=forms.IntegerField(label='Nro de Integrantes')
-    musical_genre=forms.CharField(max_length=100, label='Genero/estilo')
 
     class Meta:
         model = UserProfile
-        fields = ['members', 'musical_genre', 'contact']
+        fields = ['contact']

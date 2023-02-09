@@ -23,3 +23,8 @@ class Turn(Band):
 
     turn_assigned =models.CharField(choices=CHOICES, max_length=6,  null=True, blank=True)
     creation_time =models.DateTimeField(auto_now_add=True)
+
+class Event(models.Model):
+    date = models.DateField(null=True, blank=True)
+    name = models.CharField(max_length=100, null=True)
+    flyer = models.ImageField(upload_to='eventos', null=True)

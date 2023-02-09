@@ -50,3 +50,4 @@ def search_beverages(request):
 class BeveragesListView(ListView):
     model = Beverage
     template_name = 'beverages/beverages-list.html'
+    queryset = Beverage.objects.filter(sold = False)

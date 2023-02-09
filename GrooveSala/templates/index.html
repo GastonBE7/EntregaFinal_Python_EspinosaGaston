@@ -14,6 +14,35 @@
         <h4>Bienvenid@/s! Acá comienza todo 🤩</h4>
     {% endif %}
 
+    <a href="/about/" class="btn btn-info">💭 Conocer al creador 🧠</a>
+    
+
+    {% if user.is_staff %}
+    <a href="/bands/create-event/" class="btn btn-secondary">Cargar Eventos</a>
+        {% if form %}
+            <form action="" method="POST" enctype='multipart/form-data'>
+
+                {% csrf_token %}
+        
+                <table>
+                    {{form.as_table}}
+                </table>
+            
+        
+                <input type="submit" value="Cargar flyer">
+        
+            </form>
+        {% endif %}
+    
+    {% endif %}
+    <p>
+        {% for event in object_list %}
+            <h3> {{event.name}} <a style="color: green">{{event.date}}</a>🙌🏼</h3>
+            <img src="{{event.flyer.url}}" class="card-img-top" alt="Error" width="200px" height="600px">
+            <a href="/bands/cancel-event/{{event.pk}}" class="btn btn-danger"> Cancelar Evento</a>
+        {% endfor %}
+    </p>
+    
 
 
 {% endblock %}

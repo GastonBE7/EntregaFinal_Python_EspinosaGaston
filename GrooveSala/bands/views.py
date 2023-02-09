@@ -6,8 +6,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 
 # <----------------------------------------------- BAND --------------------------------------------->
-from bands.models import Band
-from bands.forms import BandForm, BandUpdateForm
+from bands.models import Band, Event
+from bands.forms import BandForm, BandUpdateForm, EventForm
 
 
 
@@ -113,8 +113,42 @@ class BandDeleteView(LoginRequiredMixin, DeleteView):
     template_name = 'bands/delete-band.html'
     success_url = '/bands/bands-list/'
 
+def create_event(request):
+    if request.method == 'GET':
+        context = {
+            'form' : EventForm(),
+        }
+        return render(request, 'index.html', context=context)
 
+    elif request.method == 'POST':
+        form = EventForm(request.POST, request.FILES)
+        if form.is_valid():
+            Event.objects.create(
+                date=form.cleaned_data['date'],
+                name=form.cleaned_data['name'],
+                flyer=form.cleaned_data['flyer'],
+            )
 
+            context = {
+                'message' : 'Evento cargado!'
+            }
+            return render(request, 'index.html', context=context)
+
+        else:
+            context = {
+                'form_errors' : form.errors,
+                'form' : EventForm(),
+            }
+    return render(request, 'index.html', context=context)
+
+class EventListView(ListView):
+    model = Event
+    template_name = 'index.html'
+
+class EventDeleteView(DeleteView):
+    model = Event
+    template_name = 'bands/cancel-event.html'
+    success_url = '/'
 # <----------------------------------------------- TURNS --------------------------------------------->
 from bands.models import Turn
 from bands.forms import TurnForm, FirstTurnForm
@@ -156,14 +190,19 @@ def create_first_turn(request):
 def create_turn(request):
     if request.method == 'GET':
         context = {
-            'form' : TurnForm()
-        }
+            'form' : TurnForm(initial={
+                'name_band':request.user.name_band,
+            }
+        )
+    }
         return render(request, 'turns/create-turn.html', context=context)
 
     elif request.method == 'POST':
         form = TurnForm(request.POST)
         if form.is_valid():
             Turn.objects.create(
+                name_band=form.cleaned_data['name_band'],
+                members=form.cleaned_data['members'],
                 turn_assigned=form.cleaned_data['turn_assigned'],
                 own_instruments=form.cleaned_data['own_instruments']
             )
@@ -176,9 +215,20 @@ def create_turn(request):
         else:
             context = {
                 'form_errors' : form.errors,
-                'form' : TurnForm(),
-            }
+                'form' : TurnForm(initial={
+                    'name_band':request.user.name_band,
+                }
+            ),
+        }
     return render(request, 'turns/create-turn.html', context=context)
+
+def my_turns(request):
+    search=request.user.name_band
+    turn = Band.objects.filter(name_band__contains=search)
+    context = {
+        'object_list':turn
+    }
+    return render(request, 'turns/turns-list.html', context=context)
 
 class TurnListView(ListView):
     model = Turn
